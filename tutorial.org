@@ -60,7 +60,7 @@ templates/                       |-- python
 #+END_EXAMPLE
 
 * Development Tools
-- [[https://en.wikipedia.org/wiki/Lint_(software)][Linters]] and other [[https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis][static code analysis tools]]:  Tools such as
+- [[https://en.wikipedia.org/wiki/Lint_(software)][Linters]] and other [[https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis][static code analysis tools]]  Tools such as
   \code{pylint} and \code{Clang} will check coding style conventions,
   but will also check for things like duplicated code, whether
   interfaces are implemented completely and used consistently, use of
@@ -152,6 +152,8 @@ operate at the function and class level:
   - For bugs, this means writing the test that illustrates and
     localizes that bug first and keeping it as part of the test suite
     thereafter.
+
+* Testing Frameworks
 
 * Continuous Integration Tools
 Several tools are available for implementing automated testing.
