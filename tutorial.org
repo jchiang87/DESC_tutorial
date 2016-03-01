@@ -1,0 +1,164 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [10pt, t]
+#+BEAMER_FRAME_LEVEL: 1
+#+TITLE: Developing DESC Software: Recommendations, Tools, and Examples
+#+AUTHOR: Jim Chiang
+#+DATE: 2016-03-08
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %8BEAMER_envargs(Env Args) %4BEAMER_col(Col) %8BEAMER_extra(Extra)
+#+PROPERTY: BEAMER_col_ALL 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 :ETC
+#+OPTIONS: toc:nil
+#+LaTeX_HEADER: \usepackage[linkcolor=blue]{hyperref}
+#+LaTeX_HEADER: \newcommand{\code}[1]{{\tt{#1}}}
+
+* Introduction
+- The Computing Infrastracture group has produced two reports:
+  - CI1: Computing Resources and Selection of Host
+  - CI2: Framework, Enviroments, and Workflow Design
+  This tutorial will cover the "Coding Practices" chapter of the CI2 report.
+- Common development practices enable a group of developers to
+  maintain a large code base more easily.
+- DESC will develop its own set of conventions, but it would be useful to
+  start with the DM team conventions.
+
+* Topics
+- GitHub Usage
+- Repository Organization
+- Coding Style Guidelines
+- Development Tools
+- Code Review
+- Development Workflows
+- Automated Testing
+- Continuous Integration Tools
+
+* GitHub
+All code should be in [[https://github.com/DarkEnergyScienceCollaboration][DESC GitHub]] repositories.  This enables the
+sharing of code throughout the collaboration, enhances communication,
+and allows people to work together more easily.
+
+* Repository organization
+Since DESC will be working a lot with LSST Stack code, it make sense to
+adopt a repository organization that emulates the DM team conventions.  Here
+is the structure of their [[https://github.com/lsst/templates][standard package template]]:
+\small
+#+BEGIN_EXAMPLE
+templates/                       |-- python
+|-- bin.src                      |   `-- lsst
+|   `-- SConscript               |       |-- __init__.py
+|-- CopyrightHeader.cc           |       `-- TMPL
+|-- CopyrightHeader.f90          |           |-- __init__.py
+|-- CopyrightHeader.py           |           |-- SConscript
+|-- doc                          |           `-- TMPLLib.i
+|   |-- doxygen.conf.in          |-- README
+|   `-- SConscript               |-- SConstruct
+|-- examples                     |-- tests
+|   `-- SConscript               |   `-- SConscript
+|-- lib                          `-- ups
+|   `-- SConscript                   |-- TMPL.build
+                                     |-- TMPL.cfg
+                                     `-- TMPL.table
+#+END_EXAMPLE
+
+* Development Tools
+- [[https://en.wikipedia.org/wiki/Lint_(software)][Linters]] and other [[https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis][static code analysis tools]]:  Tools such as
+  \code{pylint} and \code{Clang} will check coding style conventions,
+  but will also check for things like duplicated code, whether
+  interfaces are implemented completely and used consistently, use of
+  deprecated language features, etc..
+- Editor plugins: The DM team has example configurations for [[http://developer.lsst.io/en/latest/tools/emacs.html][emacs]] and
+  [[http://developer.lsst.io/en/latest/tools/vim.html][vim]] that connect those editors to code-checking tools like
+  \code{pylint} or auto-completion modules like \code{jedi}.
+- IDEs: Tools like \code{pyCharm} can be useful as they enable
+  refactoring and debugging and have interfaces to version control and
+  build systems.
+- DESC will provide template packages (e.g., using [[http://cookiecutter.readthedocs.org/en/latest/][cookiecutter]]) for
+  creating new software projects.
+
+* Coding Style Guidelines
+These are specific guidelines for how code should be written.  It
+includes such things as naming conventions for classes, functions, and
+variables (e.g., when to use CamelCase, etc.), line formatting
+(indentation and other white-space usage), preferred logic and coding
+idioms (using the \code{with} statement), etc..
+
+For Python, the DM style guidelines are essentially the [[https://www.python.org/dev/peps/pep-0008/][PEP8 Python
+Style Guide]]; while for C++, they are based on a few industry standard
+conventions: [[http://www.mmarray.org/workinggroups/computing/cppstyle.html][CARMA]], [[http://geosoft.no/development/cppstyle.html][Geosoft]], [[https://science.nrao.edu/facilities/alma/aboutALMA/Technology/ALMA_Computing_Memo_Series/0009/2001-06-06.pdf ][ALMA]].
+
+Some benefits of standard coding style:
+- Use of common idioms make the code easier to understand.
+- Syntatic consistency makes it easier to spot bugs.
+- New developers have definitive guidance on how to contribute, since
+  adopting a software group's established coding style is a social norm.
+
+* Code Review
+- The aim of code reviews is to have reliable, efficient,
+  maintainable, and well-documented code.
+- It is preferable to have code reviews occur throughout the
+  development process to ensure that a given package proceeds in a
+  useful direction from the start.
+- The DM team typically does reviews for code associated with a
+  particular development task such as a bug-fix, a feature request, or
+  an improvement of a specific aspect of the code.
+- Code review will be essential for "core" code, but it would also be
+  useful for non-core code, especially if that code eventually gets
+  used for a DESC publication or is integrated into the production
+  system.
+- Using linters and static analysis tools to find and fix syntatic and
+  other low-level errors before the review frees the code reviewer to
+  concentrate on more substantive aspects like algorithms and design.
+
+* Development Workflows
+A standard workflow such as [[https://guides.github.com/introduction/flow/][GitHub-flow]] enables multiple developers to
+work on the same package while minimizing conflicts that can arise
+from concurrent development.  Having a standard workflow also gives
+clear guidance to new developers on how to contribute.
+
+Steps for GitHub-flow:
+- Create a branch off of master.  Master should always be deployable,
+  so development should occur only on branches.
+- Add commits to keep track of work done on the branch.  Commits
+  should be fairly atomic, and commit messages should summarize the
+  content of the change.  Code checking tools should be used before
+  making a commit.
+- Open an Pull Request. This initiates discussion about changes and
+  can be made at any stage, e.g., to discuss how the development
+  should proceed, or when the code is ready to be reviewed.  The PR
+  may also trigger the CI tools to do a build and run the tests.
+- Discuss and Review the code.  Make any changes in response to the
+  review, and commit and push to the branch as before.
+- Once all the tests pass and the reviewer is satisfied, merge into
+  master.
+
+* Automated Testing
+Continuous testing is a key means of maintaining software quality.
+Running tests regularly can significantly reduce development time, as
+they can catch bugs as soon as they are introduced.  In addition,
+comprehensive tests allow for aggressive refactoring, which is an
+important part of agile development for producing high quality code.
+
+Testing can occur at several levels: system testing, integration
+testing, and unit testing.  Unit tests are the most granular and
+operate at the function and class level:
+- Unit tests should ideally be comprehensive, but if not, they should
+  cover the parts of the code where the cost of failure is highest.
+- They should run quickly.  It should be as painless as possible to
+  run the unit tests for a package so that they are run often
+  throughout the course of development.
+- If any tests are broken, they should be fixed before any other
+  development proceeds.
+- For any new development, it is recommended to write the test that
+  exercises that development first, before touching production code.
+  - For bugs, this means writing the test that illustrates and
+    localizes that bug first and keeping it as part of the test suite
+    thereafter.
+
+* Continuous Integration Tools
+Several tools are available for implementing automated testing.
+\code{Jenkins} and \code{Travis CI} are available for use by DESC:
+- Jenkins is a Java-based CI service.  We have an instance running at
+  SLAC, so we can use SLAC resources (disk space, LSST Stack code
+  installations) for building and testing DESC code.
+- [[https://travis-ci.org/][Travis CI]] is a remotely hosted service that can be easily connected
+  to and configured for a GitHub repo.  It's a free service for public
+  repositories.

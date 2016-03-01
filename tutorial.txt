@@ -1,0 +1,185 @@
+Potential topics to cover from CI2
+* continuous integration systems
+* package management system (eups)
+* external libraries
+* DESC developer framework
+* build tools (SCons)
+* Coding practice goals:
+  * dev environment needs to achieve desired levels of scientific
+    accuracy and reproducibility.
+  * writing code that is also maintainable and extensible
+  * DESC practices should be arrived at by consensus (not everyone will
+    be completely happy, but we will have a common understanding).
+
+The strawman proposal:
+* All code goes into DESC GitHub repositories.  This enables sharing of
+  code throughout the collaboration, enhancing communication and reducing
+  frictions in working together.
+
+* Repos should be organized in a standard way.  This makes it easier
+  for a package to be navigated and understood by an outside
+  developer, e.g., for C++ code the .h files are in a standard
+  location (also leading to a standard syntax for #include
+  statements).  Template packages will be provided to help DESC
+  developers make new repos with the common structure.
+
+* Coding style guidelines will be developed and their use encouraged.
+  These will be made easier to follow with linters, etc..  For
+  infrastructure and production ("core") code, these guidelines will
+  be enforced.  Having a uniform coding style makes the code easier to
+  understand and allows code reviewer to concentrate on algorithmic or
+  design issues instead of syntatic elements.
+
+* Regular code reviews should occur to ensure code quality and to make
+  sure development in a given package proceeds in a useful direction.
+  This will be essential for core code, but it would also be useful
+  for non-core code, especially if that code eventually gets used for
+  a DESC publication or is integrated into the production system.  The
+  precise scope and nature of the code reviews is TBD, but the goals
+  should be to have reliable, efficient, maintainable, and
+  well-documented code.
+
+* A standard workflow such as GitHub-flow enables multiple developers to
+  work on the same package while minimizing conflicts that can arise
+  from concurrent development.  A standard workflow also give clear guidance
+  to new developers on how to contribute.
+
+* Systematic and regular testing procedures are a key means of
+  maintaining software reliability and quality.  Testing can occur at
+  several levels, e.g., system testing, integration testing, and unit
+  testing.  Unit tests are implemented to ensure that the code at the
+  function and class level behaves as expected.  Having a
+  comprehensive set of tests can significantly reduce development
+  time, as they can allow for aggressive refactoring, and continuous
+  testing helps minimize the introduction of bugs while working on new
+  features.
+
+  Unit tests are implemented using "testing frameworks" such as
+  unittest and can be triggered to run automatically in CI tools such
+  as Jenkins and travis-ci.
+
+* Introduction
+  * Discuss CI2 study group and report.
+  * Make case for common development practices.
+  * Discuss differing levels of applicability: core code vs non-core.
+  * DM team policies as the default strawman.
+
+* Topics
+  * GitHub
+  * Package/repository organization
+  * Coding style guides
+  * Code review
+  * Development workflows
+  * Automated testing
+
+* Coding conventions and style guidelines.
+  * DM team choices: PEP8-ish for Python, C++.
+  * DESC's should be similarly informed by its developers.
+  * Benefits:
+    * Common idioms make code easier to understand.
+    * Syntatic consistency makes it easier to spot bugs.
+    * Code review is enabled.
+    * New developers have definitive guidance on how to contribute.
+    * Adopting a software group's established coding style is a
+      social norm.
+
+* Development Tools
+  * Linters and code checking tools (pylint, Clang, etc.. )
+    * Check adherence to style conventions: indentations, naming
+      conventions, line length, comment formatting, etc..
+    * Static analysis to spot interface inconsistencies (e.g., usage),
+      duplicated code, unused code, use of deprecated features, class
+      structure.
+    * Can be run standalone, but more useful as plugins to editors
+      (emacs, vim, sublime) and IDEs.  Can also be run as part of CI,
+      with metrics tracked.
+  * IDEs (pyCharm, ...)
+    * enable refactoring, using the build system, debugging; provides
+      hooks to version control system.
+  * cookiecutter templates for creating new software projects
+  * CI tools: Jenkins, travis-ci
+  * Issue tracking systems: JIRA, Zenhub, GitHub issues
+
+* Development Workflows
+  * A way for several developers to contribute to a repo and avoid
+    collisions/inconsistency in concurrent development.  (Testing is
+    also an integral part of this.)
+  * Strict adherence to a development workflow may not make sense if there
+    is only one developer or if the package is at an early stage.
+  * DM team's workflow is based on GitHub flow, and uses JIRA to assign
+    and track the progress on issues.
+  * GitHub flow for DESC use: (https://guides.github.com/introduction/flow/)
+    * Create a branch off of master
+    * commit code (following TDD practices: write tests defining the scope
+      of the development, modify production code to satisify new and
+      existing tests, refactor, test again).
+    * Open a pull request:  This can be done at any time (even before
+      creating the branch).  The PR is the forum for discussing
+      the development, including scope, design issues, implementation
+      issues, and ultimately ends in a code review.
+    * Trigger a CI build of the branch. Fix any problems.
+    * Merge changes to master.  This would also trigger a CI build.
+
+* Testing
+  * Types of tests: system, functional, regression, unit
+  * Unit test benefits:
+    * Ensures, at least at the interface level, that the code works.
+    * Reveals certain kinds of bugs immediately.
+    * Enables developers to refactor aggressively, leading to more
+      maintainable and reliable code.
+  * What to test:
+    * DM team identifies three different areas: 
+      (http://developer.lsst.io/en/latest/coding/unit_test_policy.html)
+      * White-box tests: using standard input datasets to test the
+        internal logic of a module.
+      * Black-box tests: tests designed based on the expected outputs
+        of a module given a set of standard inputs that exercise
+        the full range of behavior.
+      * Performance tests: used if the design has resource constraints
+        that it must satisfy.
+  * How to write tests (http://www.diveintopython.net/unit_testing/index.html)
+    * Test for success, failure, sanity. <give examples>
+    * Unit tests should run fast enough so that they can be run at
+      will in at the finest level of granularity.
+  * Testing frameworks
+    * Generically, xUnit, and unittest for Python.
+    * Show running of unittest (as a blackbox) at the command line.
+    * Discuss philosophy of having minimal output of passed tests
+  * Test Driven Development
+    (http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd)
+    * The three rules of TDD:
+      1. No mods to production code unless it is to make a failing test
+         pass.
+      2. Unit tests should be minimally written, i.e., no more than is
+         required to test the relevant feature.
+      3. Additions to production code should be limited to no more than
+         is required to pass the one failing test.  This is to avoid the
+         addition of untested code.
+    * We'll do an exercise on this in the tutorial.
+
+Live Demos/tutorials:
+* TDD exercise.
+  * (refer to the advertised fizzbuzz coding exercise)
+  * Recap rules of the fizzbuzz game.
+  * Write first test:
+    * Illustrate jedi command completion.
+    * Run pylint and PEP8 in emacs.
+    * Run tests.
+  * Iterate:
+    * Write implementation to fix test
+    * Run tests
+    * Refactor
+    * Add next test
+    * Run tests showing failure
+
+* GitHub flow example:
+  * Go to repo and look at Phil's bug issue
+  * Clone repo
+  * Create issue branch
+  * implement test
+  * run tests showing failure
+  * implement fix
+  * run tests
+  * commit changes, push to branch, issue PR
+  * Phil reviews changes, merges to master, triggering travis-ci build
+  * Go to next issue

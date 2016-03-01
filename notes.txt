@@ -1,0 +1,4 @@
+* rationale for quiet unit tests
+* rationale for quick unit tests
+* github flow description: use of branches, ensure that master is
+  always deployable
