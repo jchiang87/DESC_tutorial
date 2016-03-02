@@ -87,7 +87,7 @@ conventions: [[http://www.mmarray.org/workinggroups/computing/cppstyle.html][CAR
 
 Some benefits of standard coding style:
 - Use of common idioms make the code easier to understand.
-- Syntatic consistency makes it easier to spot bugs.
+- Syntactic consistency makes it easier to spot bugs.
 - New developers have definitive guidance on how to contribute, since
   adopting a software group's established coding style is a social norm.
 
@@ -104,7 +104,7 @@ Some benefits of standard coding style:
   useful for non-core code, especially if that code eventually gets
   used for a DESC publication or is integrated into the production
   system.
-- Using linters and static analysis tools to find and fix syntatic and
+- Using linters and static analysis tools to find and fix syntactic and
   other low-level errors before the review frees the code reviewer to
   concentrate on more substantive aspects like algorithms and design.
 
