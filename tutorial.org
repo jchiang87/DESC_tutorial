@@ -8,62 +8,61 @@
 #+COLUMNS: %45ITEM %10BEAMER_env(Env) %8BEAMER_envargs(Env Args) %4BEAMER_col(Col) %8BEAMER_extra(Extra)
 #+PROPERTY: BEAMER_col_ALL 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 :ETC
 #+OPTIONS: toc:nil
-#+LaTeX_HEADER: \usepackage{xcolor}
-#+LaTeX_HEADER: \usepackage[linkcolor=blue]{hyperref}
 #+LaTeX_HEADER: \newcommand{\code}[1]{{\tt{#1}}}
-#+LaTeX_HEADER: \newcommand{\bold}[1]{{\bf{#1}}}
+#+LaTeX_HEADER: \newcommand{\mybold}[1]{{\textbf{#1}}}
+#+LaTeX_HEADER: \hypersetup{colorlinks=true, urlcolor=blue}
 
 * Outline
 - Key Messages:
-  - Test your code.
+  - Automate your tests.
   - Read other people's code, have others look at yours.
   - Have a set of coding conventions for your group.
 - Demos:
   - GitHub flow
-  - Using a testing framework and tool usage
+  - Using a testing framework other development tools
   - Travis CI
 
-[[https://confluence.slac.stanford.edu/display/LSSTDESC/Developing+DESC+Software][Background material]]: https://confluence.slac.stanford.edu/x/RA1lD
+Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
 
-* Test Your Code
-  \bold{Why:}
+* Automate Your Tests
+  \mybold{Why:}
+  - Everyone who runs their code and looks at the output is testing
+    their code.
   - If you want others to use your code or rely on the results from
-    your code, it needs to be tested.
+    your code, it needs to be tested systematically.
   - Even for well-designed, loosely coupled code, new development can
     introduce bugs that break existing functionality.  A good set of
-    tests can guard against that.
-  - Everyone does at least some informal testing of the code they
-    write, but there are formal approaches that have been developed
-    which have been demonstrated to help maintain code quality.
+    automated tests can guard against that.
 
-* Test Your Code
-  \bold{How:} There are many ways to test code: system, integration,
-  regression.  \emph{Unit tests} bear most directly on day-to-day
-  (or even minute-to-minute) development.
-  - Unit tests should be atomic and isolated, i.e., a test should
-    exercise the functionality of the smalles units of code (functions
-    and classes) and work without lots of external dependencies.
-  - One should test for success (i.e., comparing results to
-    expectations), but it is also good to check fo failures (i.e.,
-    from bad input, etc.).
-  - The output of successful tests should be minimal.  If you have
-    to look at the output to verify success, you will run them less often.
-  - Make unit tests automated and easy to run, and run them often
-    throughout the development cycle.
+* Automate Your Tests
+  \mybold{How:} There are many types of softare testing: system,
+  integration, regression, etc..  \emph{Unit tests} bear most directly
+  on day-to-day (or even minute-to-minute) development.
+  - Unit tests exercise the functionality of the smallest units of
+    code (functions and class methods).  They should be "atomic" and
+    isolated (i.e.., have few external dependencies).
+  - It is natural to test for success, i.e., compare results to
+    expectations, but one should also check for failure, e.g.,
+    raising exceptions for bad input, etc..
+  - Unit tests should be quick and easy to execute, and they should be
+    run often throughout the development cycle.
+  - The output of successful tests should be minimal.  If you have to
+    examine the output to verify success, you will run the tests less
+    often.
+  - Consider using "test first development" methods, especially for
+    fixing bugs: write a test that reveals the bug, fix the code to
+    make it pass, and keep that test as part of the test suite.
   - Use a testing framework, e.g., \code{unittest} for Python, and
-    hook it up to a continuous integration system, e.g., Travis CI,
+    hook it up to a continuous integration system like Travis CI or
     Jenkins.
-  - Consider "test first development" methods, especially for fixing bugs:
-    i.e., write a test that reveals the bug, fix the code to make it pass,
-    keep the that test as part of the test suite.
 
 * Read other people's code, have others read yours
-  \bold{Why:}
-  - Developing software is a craft and standard practices and tools
-    have evolved that help make code more reliable.  Those practices
-    can be taught, but most scientists pick up coding on their own and
-    not necessarily with the best examples at hand.  Learn from and
-    teach others.
+  \mybold{Why:}
+  - Software development has standard practices and tools that have
+    evolved which help make code more reliable.  Those practices can
+    be taught, but most scientists pick up coding on their own and not
+    necessarily with the best examples at hand.  Learn from and teach
+    others.
   - Not everyone approaches a coding task the same way.  Multiple eyes
     on a problem or design issue can lead to better implementation.
   - For a group software project, there is a lot of risk in having
@@ -71,31 +70,36 @@
     of the code base.  The more widely understood an important code
     is, the better.
 
-* Read other people's code, have others read yours.
-  \bold{How} -- some suggestions:
-  - Share your code on GitHub.
-  - Do code reviews.
-  - Pair program.
-  - Consider using a weak code-ownership model, i.e., have different
-    people cycle through working on any given part of the code.
+* Read other people's code, have others read yours
+  \mybold{How} -- some suggestions:
+  - Share your code on GitHub.  This is the easiest way to make your code
+    available for other to read and try out.
+  - Do code reviews.  If done incrementally, reviews can be relatively
+    painless.
+  - Pair program.  Have people with different programming backgrounds and
+    different levels of experience work together.
+  - Have different people cycle through working on any given part of
+    the code.  This will help ensure that the expertise to work
+    effectively on any part of the codebase does not reside in just
+    one person.
 
 * Have a set of coding conventions for your group
-  \bold{Why:} Coding style is like a dialect: two developers may be
+  \mybold{Why:} Coding style is like a dialect: two developers may be
   using the same language (Python, C++), but if their respective
   coding styles differ substantially, they'll have trouble
   understanding each other's code.
 
 * Have a set of coding conventions for your group
-  \bold{How} -- suggestions:
-  - Look at standard conventions, such as PEP8, which are standards for
-    a reason. Reach consensus on the standards that you do adopt.
+  \mybold{How} -- suggestions:
+  - Look at standard conventions, such as [[https://www.python.org/dev/peps/pep-0008/][PEP8]], which are standards
+    for a reason.  Reach consensus on the standards that you do adopt.
   - Use code checking tools, such as \emph{linters} like [[https://www.pylint.org/][PyLint]].
     These are configurable and can also perform static code analysis
     to uncover real or potential bugs.
   - Use editor plugins for the code checking tools so that the friction
     to using them is minimal.
-  Another benefit of having code pass linter-type tests is that a code
-  reviewer can concentrate on the substantive features of the
+  Another benefit of having code pass linter-type tests is that a person
+  reviewing the code can concentrate on the substantive features of the
   implementation, thereby making the feedback from the review more
   valuable.
 
@@ -121,16 +125,21 @@
   - Add commits to keep track of the work done on the branch.
 #+BEGIN_SRC sh
    $ emacs tests/test_Primes.py
+
    <...edit the test code...>
+
    $ git add tests/test_Primes.py
    $ git commit -m "add test for negative numbers"
    [issue/3/neg_nums_not_prime ae7310c] add test for negative numbers
     1 file changed, 4 insertions(+)
+
    <...edit the production code...>
+
    $ git add python/desc/primes/Primes.py 
    $ git commit -m "fix Primes.is_prime to handle negative numbers correctly"
    [issue/3/neg_nums_not_prime 7f1a26d] fix Primes.is_prime to handle negative numbers correctly
     1 file changed, 1 insertion(+), 1 deletion(-)
+   $
 #+END_SRC sh
 
 * GitHub Flow (3)
@@ -158,23 +167,25 @@
     before.
   - Once all the tests pass and the reviewer is satisfied, merge into
     master.  There may be a step to run and pass \emph{integration
-    tests} before merging into master.  These would typically be
-    triggerable as part of the CI service.
+    tests} before merging into master; these could also be triggerable
+    as part of the CI service.
 
-* Demo using \code{unittest}, \code{PyLint}, \code{nose} from \code{emacs}
+* Demo using development tools with \code{emacs}
   Some relevant links:
   - [[https://docs.python.org/2/library/unittest.html][unittest]]: The standard unit testing framework for Python.
   - [[https://www.pylint.org/][PyLint]]: A Python code checking tool.
   - [[https://nose.readthedocs.org/en/latest/][nose]]: For running unit tests.
+  - [[http://jedi.jedidjah.ch/en/latest/][Jedi]]: An autocompletion and static analysis library for Python.
   - DM team configurations for [[http://developer.lsst.io/en/latest/tools/emacs.html][emacs]] and [[http://developer.lsst.io/en/latest/tools/vim.html][vim]].
 
 * Demo using Travis CI
-  Be sure to use the \code{.org} address for open GitHub repositories:
+  Be sure to use the \code{.org} address for \emph{public} GitHub 
+  repositories:
   https://travis-ci.org/
 
 * Summary
 - Take-aways:
-  - Test your code.
+  - Automate your tests.
   - Read other people's code, have others look at yours.
   - Have a set of coding conventions for your group.
 - Demos:
@@ -182,5 +193,5 @@
   - Using a testing framework and tool usage
   - Travis CI
 
-[[https://confluence.slac.stanford.edu/display/LSSTDESC/Developing+DESC+Software][Background material]]: https://confluence.slac.stanford.edu/x/RA1lD
+Reference material: \url{https://confluence.slac.stanford.edu/x/RA1lD}
 
