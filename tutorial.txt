@@ -1,3 +1,80 @@
+Take-away topics:
+* Test your code.
+  Why: * If other people rely on your code or the results from your code,
+         it needs to be tested ("I don't have time to write tests" is not
+         really a valid excuse, IMO.)
+       * Even for well-designed, loosely coupled code, new development has
+         the potential for breaking existing functionality.  A good set
+         of tests can guard against that.
+  How: There are all sorts of ways to test code: integration, functional,
+       regression.  I will talk about unit tests because these bear most
+       directly on how does development on a day-to-day, minute-to-minute
+       basis.
+       * Unit tests apply to the lowest level components:
+         classes and functions.
+       * Run the unit tests often through the development cycle.
+       * Output of successful tests should be minimal.  If you have to
+         look at the output to verify success, you will run them less
+         often.
+       * Make them automated and easy to run.
+       * Use a standard testing framework (e.g., unittest) and hook it
+         up to a continuous build system (Travis CI, Jenkins).
+       * Consider Test first development, TDD.
+
+* Have other people look at your code, look at other people's code.
+  Why: * Coding is a craft and over time standard practices and tools
+         have evolved that help make the code more reliable (e.g.,
+         design patterns).
+         It can be taught, but most people, especially scientists, learn
+         it on their own.  Learn from and teach others.
+         Finally, for a group software project, there is a lot of risk
+         if there is only one person who understands or can maintain
+         an important part of the codebase.
+  How: * Pair program.
+       * Do code review.
+       * Share your code on GitHub.
+       * Use a weak code-ownership model, i.e., encourage people to
+         work all parts of the code.
+
+* Have a set of coding conventions for your group.  Follow the
+  established conventions of groups you join.
+
+  Why: Coding conventions/style is like a dialect: two developers
+       may be using the same language (e.g., Python, C++), but if
+       their coding styles differ substantially, they'll have
+       trouble understanding each others code.
+  How: * Adopt standard conventions, e.g., PEP8, but more importantly,
+         reach consensus on the conventions you do adopt.
+       * Use code checking tools, like PyLint.  These also perform
+         static code analysis to check for potential bugs.
+       * Use editor plugins for the code checking tools.
+       (Aside: having code pass linter tests means that the code
+       reviewer can concentrate on substantive features of the
+       implementation, thereby making the review more valuable.)
+
+Demos:
+* github flow  (slides with screenshots)
+  * work on branches, master is never broken
+* bug-fixing Primes using testing framework and editor plugins (live).
+* using Travis CI:
+  * Go to Primes repo
+    -> Settings tab
+    -> Webhooks & services
+    -> Show Add service pull-down
+  * Go to travis-ci.org
+     -> '+' next to My Repositories
+     -> toggle switch to turn on service for that repo
+     -> click settings symbol to toggle build on push or PR
+  * Go back to Primes
+    -> Edit Travis CI button
+    -> Click Test Service to trigger a build.
+    <wait for failure>
+  * Go to code
+    -> edit production code to trigger build
+    <wait for success>
+
+-------------------------------------------------------------------------
+
 Potential topics to cover from CI2
 * continuous integration systems
 * package management system (eups)
