@@ -18,11 +18,13 @@
   - Read other people's code, have others look at yours.
   - Have a set of coding conventions for your group.
 - Demos:
-  - GitHub flow
-  - Using a testing framework other development tools
-  - Travis CI
+  - GitHub flow for managing development in group projects.
+  - Using a testing framework and other development tools.
+  - Travis CI: A continous integration service.
 
-Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
+Reference material:
+\tt
+https://confluence.slac.stanford.edu/x/RA1lD
 
 * Automate Your Tests
   \mybold{Why:}
@@ -35,7 +37,7 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
     automated tests can guard against that.
 
 * Automate Your Tests
-  \mybold{How:} There are many types of softare testing: system,
+  \mybold{How:} There are many types of software testing: system,
   integration, regression, etc..  \emph{Unit tests} bear most directly
   on day-to-day (or even minute-to-minute) development.
   - Unit tests exercise the functionality of the smallest units of
@@ -56,13 +58,35 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
     hook it up to a continuous integration system like Travis CI or
     Jenkins.
 
+* Example Unit Tests
+  From https://github.com/jchiang87/Primes/blob/master/tests/test_Primes.py
+\small
+#+BEGIN_SRC python
+import unittest
+from desc.primes import is_prime
+
+class PrimesTestCase(unittest.TestCase):
+    """
+    TestCase class for is_prime function.
+    """
+    def test_one_is_not_prime(self):
+        self.assertFalse(is_prime(1))
+
+    def test_two_is_prime(self):
+        self.assertTrue(is_prime(2))
+
+    def test_float_raises_type_error(self):
+        self.assertRaises(TypeError, is_prime, 3.14159)
+#+END_SRC python
+A more interesting example can be seen at
+https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
+
 * Read other people's code, have others read yours
   \mybold{Why:}
-  - Software development has standard practices and tools that have
-    evolved which help make code more reliable.  Those practices can
-    be taught, but most scientists pick up coding on their own and not
-    necessarily with the best examples at hand.  Learn from and teach
-    others.
+  - Software development has standard practices that have evolved that
+    help make code more reliable.  Those practices can be taught, but
+    most scientists pick up coding on their own and not necessarily
+    with the best examples at hand.  Learn from and teach others.
   - Not everyone approaches a coding task the same way.  Multiple eyes
     on a problem or design issue can lead to better implementation.
   - For a group software project, there is a lot of risk in having
@@ -73,14 +97,15 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
 * Read other people's code, have others read yours
   \mybold{How} -- some suggestions:
   - Share your code on GitHub.  This is the easiest way to make your code
-    available for other to read and try out.
+    available for others to read and try out.
   - Do code reviews.  If done incrementally, reviews can be relatively
-    painless.
+    painless.  The DM team has a description of [[http://developer.lsst.io/en/latest/processes/workflow.html#the-scope-and-purpose-of-code-review][the purpose and scope
+    of code review]].
   - Pair program.  Have people with different programming backgrounds and
     different levels of experience work together.
   - Have different people cycle through working on any given part of
     the code.  This will help ensure that the expertise to work
-    effectively on any part of the codebase does not reside in just
+    effectively on any part of the code base does not reside in just
     one person.
 
 * Have a set of coding conventions for your group
@@ -104,20 +129,23 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
   valuable.
 
 * GitHub Flow
-  For a project with several developers, it is helpful to have a common
-  \emph{development workflow} to avoid conflicts.  Git's branching facility
-  is a powerful feature which enables this.  There are a number of different
-  workflows that are widely used.  The DM team's workflow is a slight variant
-  of GitHub Flow.
+  For a project with several developers, it is helpful to have a
+  common \emph{development workflow} to avoid conflicts.  Git's
+  branching facility is a powerful feature which enables this.  There
+  are a number of different workflows that are widely used.  The DM
+  team's workflow is based on GitHub Flow.
 
+  As an example, we'll fix a bug in https://github.com/jchiang87/Primes
+
+#+LATEX:\vspace{0.1in}
   Here are the steps for [[https://guides.github.com/introduction/flow/][GitHub Flow]]:
-  - Create a branch off master.  The key point here is that master should
-    always be deployable, i.e., not broken.
+  - Create a branch off master.  Developing on a branch helps ensure
+    that master remains be deployable, i.e., not broken.
 #+BEGIN_SRC sh
    $ git branch
    * master
-   $ git checkout -b issue/3/neg_nums_not_prime
-   Switched to a new branch 'issue/3/neg_nums_not_prime'
+   $ git checkout -b issue/1/non_positive_args_cause_TypeError
+   Switched to a new branch 'issue/1/non_positive_args_cause_TypeError'
    $
 #+END_SRC sh
 
@@ -129,31 +157,31 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
    <...edit the test code...>
 
    $ git add tests/test_Primes.py
-   $ git commit -m "add test for negative numbers"
-   [issue/3/neg_nums_not_prime ae7310c] add test for negative numbers
-    1 file changed, 4 insertions(+)
+   $ git commit -m "add test for numbers <= 0"
+   [issue/1/non_positive_args_cause_TypeError a5d3db2] add test for numbers <= 0
+    1 file changed, 5 insertions(+)
 
    <...edit the production code...>
 
-   $ git add python/desc/primes/Primes.py 
-   $ git commit -m "fix Primes.is_prime to handle negative numbers correctly"
-   [issue/3/neg_nums_not_prime 7f1a26d] fix Primes.is_prime to handle negative numbers correctly
-    1 file changed, 1 insertion(+), 1 deletion(-)
+   $ git add python/desc/primes/Primes.py
+   $ git commit -m "fix Primes.is_prime to raise TypeError for numbers <= 0"
+   [issue/1/non_positive_args_cause_TypeError 552d458] fix Primes.is_prime to raise TypeError for numbers <= 0
+    1 file changed, 3 insertions(+)
    $
 #+END_SRC sh
 
 * GitHub Flow (3)
   - Push the changes to GitHub.
 #+BEGIN_SRC sh
-   $ git push -u origin issue/3/neg_nums_not_prime 
-   Counting objects: 21, done.
+   $ git push -u origin issue/1/non_positive_args_cause_TypeError 
+   Counting objects: 17, done.
    Delta compression using up to 4 threads.
-   Compressing objects: 100% (11/11), done.
-   Writing objects: 100% (14/14), 1.22 KiB | 0 bytes/s, done.
-   Total 14 (delta 6), reused 0 (delta 0)
-   To git@github.com:jchiang87/my_Primes.git
-    * [new branch]      issue/3/neg_nums_not_prime -> issue/3/neg_nums_not_prime
-   Branch issue/3/neg_nums_not_prime set up to track remote branch issue/3/neg_nums_not_prime from origin.
+   Compressing objects: 100% (8/8), done.
+   Writing objects: 100% (10/10), 996 bytes | 0 bytes/s, done.
+   Total 10 (delta 4), reused 0 (delta 0)
+   To git@github.com:jchiang87/Primes.git
+    * [new branch]      issue/1/non_positive_args_cause_TypeError -> issue/1/non_positive_args_cause_TypeError
+   Branch issue/1/non_positive_args_cause_TypeError set up to track remote branch issue/1/non_positive_args_cause_TypeError from origin.
    $
 #+END_SRC sh
 
@@ -162,9 +190,15 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
     forum for the discussion about the development, including code review.
     Continuous integration tools like Travis CI can be configured to
     trigger builds on pushes or PRs.
+[[./Create_Pull_Request.png]]
+
+* GitHub Flow (5)
   - Discuss and review the code using the PR thread.  Make any changes
     in response to the review, and commit and push to the branch as
     before.
+[[./Create_Pull_Request_3.png]]
+
+* GitHub Flow (6)
   - Once all the tests pass and the reviewer is satisfied, merge into
     master.  There may be a step to run and pass \emph{integration
     tests} before merging into master; these could also be triggerable
@@ -190,8 +224,10 @@ Reference material: [[https://confluence.slac.stanford.edu/x/RA1lD]]
   - Have a set of coding conventions for your group.
 - Demos:
   - GitHub flow
-  - Using a testing framework and tool usage
+  - Using a testing framework and other development tools
   - Travis CI
 
-Reference material: \url{https://confluence.slac.stanford.edu/x/RA1lD}
+Reference material:
+\tt
+https://confluence.slac.stanford.edu/x/RA1lD
 

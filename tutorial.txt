@@ -57,6 +57,7 @@ Demos:
   * work on branches, master is never broken
 * bug-fixing Primes using testing framework and editor plugins (live).
 * using Travis CI:
+  <be sure Primes is broken and travi-ci is set to trigger on push>
   * Go to Primes repo
     -> Settings tab
     -> Webhooks & services
