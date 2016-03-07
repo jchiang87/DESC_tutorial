@@ -56,6 +56,17 @@ Demos:
 * github flow  (slides with screenshots)
   * work on branches, master is never broken
 * bug-fixing Primes using testing framework and editor plugins (live).
+  * run nosetests from command line to show that tests fail.
+  * Run fixes in emacs:  $ emacs tests/test_Primes.py
+    * Show nosetests execution to replicate failure
+    * Show pylint execution to show stats.
+    * Add a test function (without a docstring) to demo jedi autocompletion.
+    * Go to top of file and run pylint again to demo C-x` 'next-error
+    * Fix docstring, run pylint
+    * Run nosetests
+    * Edit production code.
+    * Run nosetests from python/desc/primes/Primes.py
+
 * using Travis CI:
   <be sure Primes is broken and travi-ci is set to trigger on push>
   * Go to Primes repo

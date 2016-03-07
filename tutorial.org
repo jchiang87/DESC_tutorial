@@ -134,34 +134,38 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
   branching facility is a powerful feature which enables this.  There
   are a number of different workflows that are widely used.  The DM
   team's workflow is based on GitHub Flow.
-
+#+LATEX:\vspace{0.1in}
   As an example, we'll fix a bug in https://github.com/jchiang87/Primes
 
-#+LATEX:\vspace{0.1in}
+* GitHub Flow (2)
   Here are the steps for [[https://guides.github.com/introduction/flow/][GitHub Flow]]:
   - Create a branch off master.  Developing on a branch helps ensure
-    that master remains be deployable, i.e., not broken.
+    that master remains deployable, i.e., not broken.
+\small
 #+BEGIN_SRC sh
    $ git branch
    * master
+   $ git pull
+   Already up-to-date.
    $ git checkout -b issue/1/non_positive_args_cause_TypeError
    Switched to a new branch 'issue/1/non_positive_args_cause_TypeError'
    $
 #+END_SRC sh
 
-* GitHub Flow (2)
+* GitHub Flow (3)
   - Add commits to keep track of the work done on the branch.
+\small
 #+BEGIN_SRC sh
    $ emacs tests/test_Primes.py
 
-   <...edit the test code...>
+   <...edit the test code, and verify the new test fails...>
 
    $ git add tests/test_Primes.py
    $ git commit -m "add test for numbers <= 0"
    [issue/1/non_positive_args_cause_TypeError a5d3db2] add test for numbers <= 0
     1 file changed, 5 insertions(+)
 
-   <...edit the production code...>
+   <...edit the production code, and verify *all* of the tests pass...>
 
    $ git add python/desc/primes/Primes.py
    $ git commit -m "fix Primes.is_prime to raise TypeError for numbers <= 0"
@@ -170,8 +174,9 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
    $
 #+END_SRC sh
 
-* GitHub Flow (3)
+* GitHub Flow (4)
   - Push the changes to GitHub.
+\small
 #+BEGIN_SRC sh
    $ git push -u origin issue/1/non_positive_args_cause_TypeError 
    Counting objects: 17, done.
@@ -185,20 +190,20 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
    $
 #+END_SRC sh
 
-* GitHub Flow (4)
+* GitHub Flow (5)
   - Open a Pull Request.  This can happen at any time and provides a
     forum for the discussion about the development, including code review.
     Continuous integration tools like Travis CI can be configured to
     trigger builds on pushes or PRs.
 [[./Create_Pull_Request.png]]
 
-* GitHub Flow (5)
+* GitHub Flow (6)
   - Discuss and review the code using the PR thread.  Make any changes
     in response to the review, and commit and push to the branch as
     before.
 [[./Create_Pull_Request_3.png]]
 
-* GitHub Flow (6)
+* GitHub Flow (7)
   - Once all the tests pass and the reviewer is satisfied, merge into
     master.  There may be a step to run and pass \emph{integration
     tests} before merging into master; these could also be triggerable
