@@ -20,32 +20,39 @@
 - Demos:
   - GitHub flow for managing development in group projects.
   - Using a testing framework and other development tools.
-  - Travis CI: A continous integration service.
+  - Travis CI: A continuous integration service.
 
 Reference material:
 \tt
 https://confluence.slac.stanford.edu/x/RA1lD
 
 * Automate Your Tests
+  "Automated" means that the tests self-verifying and can be run
+  without any special set up (such as files or other inputs) that
+  needs to be prepared.
+#+LATEX:\vspace{0.1in}
+
   \mybold{Why:}
   - Everyone who runs their code and looks at the output is testing
-    their code.
-  - If you want others to use your code or rely on the results from
-    your code, it needs to be tested systematically.
+    their code. However, if you want others to use your code or rely
+    on the results from your code, it needs to be tested thoroughly
+    and systematically.
   - Even for well-designed, loosely coupled code, new development can
     introduce bugs that break existing functionality.  A good set of
     automated tests can guard against that.
+  - A comprehensive set of unit tests allows you to \emph{refactor}
+    (i.e., improve working code while not changing functionality)
+    aggressively.
 
 * Automate Your Tests
   \mybold{How:} There are many types of software testing: system,
   integration, regression, etc..  \emph{Unit tests} bear most directly
   on day-to-day (or even minute-to-minute) development.
-  - Unit tests exercise the functionality of the smallest units of
-    code (functions and class methods).  They should be "atomic" and
-    isolated (i.e.., have few external dependencies).
+  - Unit tests consider the functionality of the smallest units of
+    code:  functions and class methods.
   - It is natural to test for success, i.e., compare results to
-    expectations, but one should also check for failure, e.g.,
-    raising exceptions for bad input, etc..
+    expectations, but one should also check for failure, consistency,
+    etc.
   - Unit tests should be quick and easy to execute, and they should be
     run often throughout the development cycle.
   - The output of successful tests should be minimal.  If you have to
@@ -54,6 +61,9 @@ https://confluence.slac.stanford.edu/x/RA1lD
   - Consider using "test first development" methods, especially for
     fixing bugs: write a test that reveals the bug, fix the code to
     make it pass, and keep that test as part of the test suite.
+  - 100% "coverage" is the ideal, but if you have to prioritize
+    testing, \emph{write tests for the functions that have the
+    greatest cost of failure.}
   - Use a testing framework, e.g., \code{unittest} for Python, and
     hook it up to a continuous integration system like Travis CI or
     Jenkins.
@@ -81,12 +91,14 @@ class PrimesTestCase(unittest.TestCase):
 A more interesting example can be seen at
 https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
 
-* Read other people's code, have others read yours
+* Read other people's code, have others read yours (share your code)
   \mybold{Why:}
   - Software development has standard practices that have evolved that
     help make code more reliable.  Those practices can be taught, but
     most scientists pick up coding on their own and not necessarily
-    with the best examples at hand.  Learn from and teach others.
+    with the best examples at hand.  However, many do take the craft
+    of coding seriously, so look for examples of good code in your
+    colleagues' work.
   - Not everyone approaches a coding task the same way.  Multiple eyes
     on a problem or design issue can lead to better implementation.
   - For a group software project, there is a lot of risk in having
@@ -94,9 +106,9 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
     of the code base.  The more widely understood an important code
     is, the better.
 
-* Read other people's code, have others read yours
+* Read other people's code, have others read yours (share your code)
   \mybold{How} -- some suggestions:
-  - Share your code on GitHub.  This is the easiest way to make your code
+  - Put your code on GitHub.  This is the easiest way to make your code
     available for others to read and try out.
   - Do code reviews.  If done incrementally, reviews can be relatively
     painless.  The DM team has a description of [[http://developer.lsst.io/en/latest/processes/workflow.html#the-scope-and-purpose-of-code-review][the purpose and scope
@@ -114,6 +126,13 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
   coding styles differ substantially, they'll have trouble
   understanding each other's code.
 
+#+LATEX: \vfill
+#+LATEX: \centering
+#+ATTR_LATEX: height=2in
+[[./tumblr_mnmlnrzv1c1sswsljo1_400.jpg]]
+#+LATEX: \vfil
+
+
 * Have a set of coding conventions for your group
   \mybold{How} -- suggestions:
   - Look at standard conventions, such as [[https://www.python.org/dev/peps/pep-0008/][PEP8]], which are standards
@@ -124,16 +143,17 @@ https://github.com/DarkEnergyScienceCollaboration/Twinkles/tree/master/tests
   - Use editor plugins for the code checking tools so that the friction
     to using them is minimal.
   Another benefit of having code pass linter-type tests is that a person
-  reviewing the code can concentrate on the substantive features of the
+  reviewing the code can concentrate on the substantive aspects of the
   implementation, thereby making the feedback from the review more
   valuable.
 
 * GitHub Flow
   For a project with several developers, it is helpful to have a
   common \emph{development workflow} to avoid conflicts.  Git's
-  branching facility is a powerful feature which enables this.  There
+  branching facility is a powerful feature that enables this.  There
   are a number of different workflows that are widely used.  The DM
   team's workflow is based on GitHub Flow.
+
 #+LATEX:\vspace{0.1in}
   As an example, we'll fix a bug in https://github.com/jchiang87/Primes
 

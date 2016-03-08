@@ -75,10 +75,12 @@ Demos:
     -> Show Add service pull-down
   * Go to travis-ci.org
      -> '+' next to My Repositories
+     -> click Sync account button
      -> toggle switch to turn on service for that repo
      -> click settings symbol to toggle build on push or PR
   * Go back to Primes
-    -> Edit Travis CI button
+    -> Show the .travis.yml configuration.
+    -> Edit Travis CI button.
     -> Click Test Service to trigger a build.
     <wait for failure>
   * Go to code
