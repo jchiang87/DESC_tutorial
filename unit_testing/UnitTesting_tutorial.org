@@ -3,7 +3,7 @@
 #+LaTeX_CLASS_OPTIONS: [10pt, t]
 #+BEAMER_FRAME_LEVEL: 1
 #+TITLE: Unit Testing and Continuous Integration
-#+AUTHOR: Jim Chiang, Heather Kelly
+#+AUTHOR: Jim Chiang, Heather Kelly, Phil Marshall
 #+DATE: 2016-07-19
 #+COLUMNS: %45ITEM %10BEAMER_env(Env) %8BEAMER_envargs(Env Args) %4BEAMER_col(Col) %8BEAMER_extra(Extra)
 #+PROPERTY: BEAMER_col_ALL 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 :ETC
@@ -20,15 +20,170 @@
 - Group code review
 - Wrap-up
 
-* Writing Unit Tests and Test-Driven Development
+* Writing Unit Tests
+- Unit tests exercise the lowest level functionality: functions and class
+  methods.
+- Tests should run quickly and automatically, and be self-checking.
+  One should feel free to run unit tests many times during a session,
+  and only failures should have any output that needs to be parsed.
+- Things to test:
+  - Test for success: Given specific inputs, does the function or
+    method produce the expected outputs?
+  - Test for failure: For bad input, does the function or method fail in
+    the expected way? e.g., by raising specific exceptions or returning
+    specific error codes.
+
+* Ways to Test
+  (see https://developer.lsst.io/coding/unit_test_policy.html)
+  - White-box Tests
+    "These tests are designed by examining the internal logic of each
+    module and defining the input data sets that force the execution
+    of different paths through the logic."
+
+  - Black-box Tests
+    "These tests are designed by examining the specification of each
+    module and defining input data sets that will result in different
+    behavior (e.g., outputs). Black-box tests should be designed to
+    exercise the software for its whole range of inputs."
+
+  - Performance Tests
+    "If the detailed design placed resource constraints on the
+    performance of a module, compliance with these constraints should
+    be tested."
+
+* Test Driven Development
+  - Similarity to debugging:
+    - Reproduce and isolate the bug.
+    - Work on production code until bug is fixed.
+  - For new functionality:
+    - Write the test code that calls the function or method and tests
+      the output.  Since the production code hasn't been written yet,
+      this test code will fail.  Production code should not be touched
+      (except for refactoring) unless it is to fix a failing test.
+
+    - Add production code until and only until the tests pass ("the
+      simplest thing that can possibly work").  This helps prevent
+      adding functionality that would not be tested by the test code
+      that was just written.
+
+    - Refactor to remove duplicated functionality or to handle special
+      cases more generally (being careful not to introduce too much
+      new functionality, if any).
+
+    - Redesign interfaces:
+      - Update tests.
+      - Update production code.
 
 * Using Travis-CI
+  - Free for public GitHub-hosted repositories
+    - Connect GitHub repo to Travis-CI.
+
+      GitHub repo (as admin):
+
+      Settings -> Webhooks & services -> Add service
+
+      At Travis-CI:
+
+      My Repositories +(Add New Repository) -> <Activate switch>
+    - Add a .travis.yml file. (See [[https://github.com/DarkEnergyScienceCollaboration/desc_package_template][desc\_package\_template]] package.)
+      - install code and dependencies
+      - set up environment
+      - run tests and coverage analysis
+    - Connect to Coveralls
+    - Add badges to GitHub repo.
+
+* Example .travis.yml
+\smaller
+#+BEGIN_SRC yml
+language: C
+
+install:
+  - travis_wait ./setup/travis_install.sh lsst-sims nose pandas pylint
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - source eups-setups.sh
+  - pip install coveralls
+  - setup lsst_sims
+  - eups declare -r . twinkles -t current
+  - setup twinkles
+
+cache:
+  directories:
+  - $HOME/miniconda.tarball
+  timeout: 360
+#+END_SRC yml
+
+* Example .travis.yml (continued)
+\smaller
+#+BEGIN_SRC yml
+services:
+  - mysql
+
+before_script:
+  - mysql -e 'create database myapp_test'
+  - mysql -e 'show databases;'
+
+script:
+  - nosetests -s --with-coverage --cover-package=desc.twinkles
+  - pylint --py3k `find . -name \*.py -print | grep -v workflows`
+
+after_success:
+  - coveralls
+#+END_SRC yml
 
 * SLCosmo: Description and Use Cases
+  SLCosmo is a package to infer cosmological parameters from
+  Strong Lensing time delay measurements.
+  - Two classes (so far):
+    - \code{TDC2ensemble}: container for posterior samples of SL time delays.
+    - \code{SLCosmo}: container for \code{TDC2ensemble} objects
+      - Creates mocks
+      - Reads in persisted files
+      - computes cosmological parameter posteriors (sampling priors and
+        combining with TD posteriors
+
+  - Use cases:
+    - I/O
+      - Test output formatting.
+      - Test that input files can be read in correctly.
+      - Test that I/O consistency.
+    - Mock Generation
+      - Test that generated mocks have expected properties.
+    - Computing joint likelihoods for a collection of lens systems.
+      - Test for expected results using standard input data.
+
+* Worked example:
+  - [[https://github.com/DarkEnergyScienceCollaboration/SLCosmo/issues/9][GitHub]] issue.
+  - [[https://github.com/DarkEnergyScienceCollaboration/SLCosmo/pull/8][Pull request]] for adding the new functionality.
+  - The [[https://github.com/DarkEnergyScienceCollaboration/SLCosmo/blob/b84305c37774db27066b28865dca574e5b0b8418/tests/test_TDC2ensemble.py][new test code]].
+  - The [[https://travis-ci.org/DarkEnergyScienceCollaboration/SLCosmo/builds/145666391][failure]] of the PR in Travis-CI.
 
 * Pair Programming on Unit Tests
+  - Pair up, matching a more experienced developer with a less experienced
+    one if possible.
+  - Pick one or two unit tests from the [[https://github.com/DarkEnergyScienceCollaboration/SLCosmo/issues][SLCosmo issues]] to implement.
+  - Work on the tests using GitHub flow:
+\smaller
+Fork the repo at
+https://github.com/DarkEnergyScienceCollaboration/SLCosmo
+#+BEGIN_SRC sh
+$ git clone git@github.com:<github userid>/SLCosmo.git
+$ cd SLCosmo
+$ source setup/setup.sh
+$ git checkout -b <descriptive branch name>
+$ cd tests
+<... add new tests or modify existing tests ...>
+$ python test_[SLCosmo,TDC2ensemble].py
+<... show that it fails ...>
+$ git add test_[SLCosmo,TDC2ensemble].py
+$ git commit -m "unit tests for ..."
+$ git push -u origin <descriptive branch name>
+#+END_SRC sh
+Then at https://github.com/<github userid>/SLCosmo go to your
+branch and make the pull-request.
 
 * Group Code Review
+  We'll pick one or two pull-requests and go through the new code, adding
+  comments on the source code as appropriate.
 
 * Wrap-up
 
